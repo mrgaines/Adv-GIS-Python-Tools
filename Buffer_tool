@@ -1,0 +1,8 @@
+# Writing a Geoprocessing Definition Function
+import arcpy
+from arcpy import env
+env.workspace = r"C:/Users/Jay/Desktop/GIS4411/GIS4411/L3/GE1/Workspace2.gdb"
+env.overwriteOutput = True
+print("You may now call the BufferMaker definition function.")
+def BufferMaker(Distance):
+    arcpy.Buffer_analysis("Crime_Arson", "Arson_" + str(Distance), str(Distance)
