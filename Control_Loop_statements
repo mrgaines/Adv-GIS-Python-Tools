@@ -1,0 +1,32 @@
+### This script will introduce Python control statements and loops.
+x=25
+y=25
+if x < y:
+    print (y)
+elif x == y:
+    print ("x is equal to y")
+else:
+    print (x)
+print ("Notice that lines of code were skipped.")
+nameList = ["Superman", "Spock", "Groot"]
+for name in nameList:
+    print (name + "is an alien.")
+planetList = ["Krypton", "Vulcan", "Planet X"]
+i = 0
+for name in nameList:
+    print (name + " is from " + planetList[i] + ".")
+    i = i + 1
+x = 10
+while x>= 0:
+    print (x)
+    x = x - 1
+popBase = 100
+popGrwth = 0.5
+i = 0
+while popBase < 1000000:
+    newPop = popBase * popGrwth
+    popBase = popBase + newPop
+    print (popBase)
+    i = i + 1
+print ("Number of hours it will take:")
+print (i)
