@@ -1,0 +1,96 @@
+# Attribute Table Script
+# Created by: Jay Gaines
+# Created on: 03DEC2020
+# THis script will deomstrate how Python can be used to manipulate attribute tables.
+
+# Import Arcpy site package and env class
+import arcpy
+from arcpy import env
+
+# Set environments
+env.workspace = r"C:/Users/Jay/Desktop/GIS4411/GIS4411/L2/GE2/Missouri.gdb"
+env.overwriteOutput = True
+
+# Create variables
+cnty = "counties"
+tor = "tornadoes"
+updateFields = ["Dens_1970", "Dens_1980", "Dens_1990", "Dens_2000", "POP70", "POP80", "POP90", "POP00", "AREA_KM"]
+torCopy = "tornadoes_copy"
+cntyTor = "counties_tornadoes"
+keepList = ["OBJECTID", "Shape", "Join_Count", "COUNTY", "REGION", "Shape_Length", "Shape_Area"]
+deleteList = []
+
+# Create search cursor to print list of counties
+rows = sorted(arcpy.da.SearchCursor(cnty, ["COUNTY"]), reverse=True)
+print("The counties are: ")
+for row in rows:
+    print(row[0])
+
+# Create search cursor to calculate Missouri's population
+pop = 0
+rows = arcpy.da.SearchCursor(cnty, ["POP00"])
+for row in rows:
+    pop += row [0]
+print("Missouri's total population in 2000 was: " + str(pop))
+
+# Creat a new field and calculate the area in square kilometers
+arcpy.AddField_management(cnty, "AREA_KM", "DOUBLE")
+arcpy.CalculateField_management(cnty, "AREA_KM", "!Shape_Area!/1000000", "PYTHON")
+print("AREA_KM field created and calculated.")
+
+# Use a while loop to create three new fields
+counter = 1
+while counter <4:
+    arcpy.AddField_management(cnty, "Change_" + str(counter), "LONG")
+    counter += 1
+print("Change fields created.")
+
+# Calculate Change_1, CHange_2, CHange_3 fields
+arcpy.CalculateField_management(cnty, "Change_1", "!POP80! - !POP70!", "PYTHON")
+arcpy.CalculateField_management(cnty, "Change_2", "!POP90! - !POP80!", "PYTHON")
+arcpy.CalculateField_management(cnty, "Change_3", "!POP00! - !POP90!", "PYTHON")
+print("Change fields calculated.")
+
+# Calculate Population Density Per County-Use while loop to creat four new fields
+counter = 1970
+while counter < 2001:
+    arcpy.AddField_management(cnty, "Dens_" + str(counter), "DOUBLE")
+    counter +=10
+
+# Use an update cursor to calculate Density fields
+cursor = arcpy.da.UpdateCursor(cnty, updateFields)
+for row in cursor:
+    row[0] = row[4] / row[8]
+    row[1] = row[5] / row[8]
+    row[2] = row[6] / row[8]
+    row[3] = row[7] / row[8]
+    cursor.updateRow(row)
+print("Density fields created and calculated.")
+
+# Copy tornado feature class
+arcpy.Copy_management(tor, torCopy, "FeatureClass")
+
+# Use an update cursor to remove F0 tornadoes
+cursor = arcpy.da.UpdateCursor(torCopy, ["F_SCALE"])
+for row in cursor:
+    if row[0] == 0:
+        cursor.deleteRow()
+print("F0 tornadoes deleted.")
+
+# Join the counties and tornadoes_copyfeature class
+arcpy.SpatialJoin_analysis(cnty, torCopy, cntyTor, "JOIN_ONE_TO_ONE", "KEEP_ALL", "", "INTERSECT")
+print("Feature classes joined.")
+
+# Delete unecessary fields
+fieldsList = arcpy.ListFields(cntyTor)
+for field in fieldsList:
+    if field.name not in keepList:
+        deleteList.append(field.name)
+arcpy.DeleteField_management(cntyTor, deleteList)
+print("Fields deleted.")
+
+# Select large tornadoes and southeast counties
+arcpy.Select_analysis(torCopy, "large_tornadoes", "F_SCALE = 3 or F_SCALE = 4")
+arcpy.Select_analysis(cntyTor, "southeast_region", "REGION = 'Southeast'")
+print("Features selected.")
+print("The script has completed.")
