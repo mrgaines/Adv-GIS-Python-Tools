@@ -1,0 +1,20 @@
+#Clip Script
+#Created by: Jay Gaines
+#Created on: 09DEC20
+#This script will clip one feature class by another feature class.
+
+import arcpy
+from arcpy import env
+env.workspace = r"C:/Users/Jay/Desktop/GIS4411/GIS4411/L3/GE4/Clip.gdb"
+env.overwriteOutput = True
+
+def Clipper(inputFC, clipFC, outputFC):
+    try:
+        arcpy.Clip_analysis(inputFC, clipFC, outputFC)
+        print("The " + inputFC + " feature class has been clipped.")
+        count = int(arcpy.GetCount_management (outputFC).getOutput(0))
+        if count == 0:
+            print("Warning! Empty output generated.")
+    except:
+        print("Geoprocessing tool error:")
+        print(arcpy.GetMessages(2))
