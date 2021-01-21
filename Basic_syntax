@@ -1,0 +1,32 @@
+### This script will introduce basic Pythin syntax.
+#### Comments are indicated with one or more # signs.
+####You may also comment out lines of code.
+5*4
+"Will this appear in the Python Shell?"
+print (5*4)
+print ("Will this appear in the Python Shell?")
+x=5
+y=2
+z=2.0
+print (x-y)
+print (x*y)
+print (x*z)
+x=10
+print (x*y)
+a=8
+b=3.2
+c=217
+firstname="David"
+lastname='Pumpkins'
+print (firstname + lastname)
+print (firstname + " " + lastname)
+g="Geographic"
+i="Infpormation"
+print (g+ " " + i + " " + Systems)
+print (g + " " + i + " " + Systems)
+print (g + " " + i + " ") Systems
+
+csList = ["Maverick", "Goose", "Iceman", "Hollywood", "Jester"]
+nList = [4, 8, 15, 16, 23, 42]
+print (csList)
+print (nList)
