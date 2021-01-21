@@ -1,0 +1,33 @@
+# This is my Python script for Pratical Exercise 1.
+x = 247.0
+y = 19
+print(x*y)
+firstname = "Jay"
+lastname = "Gaines"
+print("Hello! My Name is", firstname, lastname)
+nerdList = ["Luke", "Han", "Leia", "C3PO", "R2D2", "Lando"]
+print(nerdList[:4])
+for name in nerdList:
+    print(name + " is a scruffy-looking nerf herder.")
+geekList = ["Jedi", "Smuggler", "Princess", "Droid", "Droid", "Gambler"]
+i = 0
+for name in nerdList:
+    print(name + " is from " + geekList[i] + ".")
+    i = i + 1
+x = 25
+while x >= 0:
+    print(x)
+    x = x - 5
+fiboList = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+print(sum(fiboList))
+oops = "A Tauntaun ate my homework!"
+print(len(oops))
+course = "GIS"
+number = "4411"
+print(course + str(number))
+print(oops.upper())
+
+
+import math
+help(math)
+print(math.pi)
