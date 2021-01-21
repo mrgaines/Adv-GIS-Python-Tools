@@ -1,0 +1,50 @@
+# Landslide Hazard Script
+# Created by: Jay Gaines
+# Created on: 03DEC2020
+# This script will identify areas with high landslide potential in Utah.
+
+
+# Import arcpy site package, env class, and all functions from the spatial analyst module
+
+import arcpy
+from arcpy import env
+from arcpy.sa import *
+
+# Retrieve Spatial analyst extension
+arcpy.CheckOutExtension("Spatial")
+
+# Set environments
+env.workspace = r"C:/Users/Jay/Desktop/GIS4411/GIS4411/L2/GE3/Utah.gdb"
+env.overwriteOutput = True
+env.extent = "AOI"
+
+# Create varibles
+elev = "Elevation"
+lc = "LandCover"
+
+# Calculate slope
+outSlope = Slope(elev, "DEGREE")
+outSlope.save("slope")
+
+# Reclassify Slope
+outReclass1 = Reclassify("slope", "Value", RemapRange([[40, 90, 1]]), "NODATA")
+outReclass1.save("steep")
+
+# Calculate aspect
+outAspect = Aspect(elev)
+outAspect.save("aspect")
+
+# Reclassify aspect
+outReclass2 = Reclassify("aspect", "Value", RemapRange([[157.5, 202.5, 1]]), "NODATA")
+outReclass2.save("south")
+
+# Reclassify land cover
+outReclass3 = Reclassify(lc, "Value", RemapValue([[31, 1], [52, 1]]), "NODATA")
+outReclass3.save("bare")
+
+# Overlay Raster Data
+outOverlay = outReclass1 & outReclass2 & outReclass3
+
+# Convert raster data to vector data
+arcpy.RasterToPolygon_conversion(outOverlay, "landslide", "NO_SIMPLIFY")
+print("The script has completed.")
