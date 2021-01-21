@@ -1,0 +1,31 @@
+# Geoprocessing Scipt
+# Created by: Jay Gaines
+# Created on: 02DEC20
+# This script will demonstrate how Python can be used to conduct
+# common geoprocessing functins like Clip, Buffer, etc.
+
+# Import Arcpy site package and env class
+import arcpy
+from arcpy import env
+
+# Set environments
+env.workspace = r"C:/Users/Jay/Desktop/GIS4411/GIS4411/L2/GE1/CountyData.gdb"
+env.overwriteOutput = True
+
+# Creat variables
+cnty = "Counties"
+hos = "Hospitals"
+clip_hos = "Clip_Hospitals"
+dist = "5 Kilometers"
+
+# Clip the hospitals by the counties
+arcpy.Clip_analysis(hos, cnty, clip_hos)
+print("The " + hos + " feature class has been clipped.")
+
+# Buffer the hospitals
+arcpy.Buffer_analysis(hos, clip_hos + "_Buffer", dist, "", "", "ALL")
+print("The " + hos + " feature class has been buffered " + dist + ".")
+
+# Earase the counties with the hospital buffer
+arcpy.Erase_analysis("counties", "Hospitals_Buffer", "Counties_Erase")
+print("The " + cnty + " feature class has been erased.")
