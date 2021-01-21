@@ -1,0 +1,25 @@
+#Shapefile to Feature Class script
+#Created by: Jay Gaines
+#Created on: 09DEC20
+#This script will iterate throughj multiple folders and convert shapefiles
+#containmed within them into feature classes stored within a common GDB
+
+import arcpy
+from arcpy import env
+env.overwriteOutput = True
+
+#Tool variables
+env.workspace = arcpy.GetParameterAsText(0)
+outWS = arcpy.GetParameterAsText(1)
+
+wsList = arcpy.ListWorkspaces()
+for ws in wsList:
+    env.workspace = ws
+    shpList = arcpy.ListFeatureClasses()
+    for shp in shpList:
+        try:
+            arcpy.FeatureClassToFeatureClass_conversion(shp, outWS, shp[:-4])
+            arcpy.AddMessage(shp + " was successfully converted.")
+        except:
+            arcpy.AddMessage(shp + " could not be converted.")
+            arcpy.AddError(arcpy.GetMessages(2))
